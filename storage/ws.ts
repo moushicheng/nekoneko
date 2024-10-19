@@ -1,4 +1,4 @@
-import { WsEntry } from "../services/ws";
+import { WsEntry } from "../types/ws";
 
 export const wsEntry: WsEntry = {
   url: "",

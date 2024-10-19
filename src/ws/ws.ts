@@ -8,6 +8,8 @@ export const createWsConnect = async (access_token, secret) => {
     return;
   }
   await saveStorageWsEntry(data);
+  //连接到ws
   const ws = await connectWs(access_token, secret);
+
   return ws;
 };
