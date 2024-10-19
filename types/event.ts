@@ -17,6 +17,12 @@ export enum Intends {
   PUBLIC_GUILD_MESSAGES = 1 << 30, // 公域机器人消息事件
 }
 
+export enum replyIntends {
+  INTERACTION = 1 << 26, // 互动事件
+  GROUP_ADD_ROBOT = 1 << 25, // 机器人被添加到群聊
+  GROUP_MSG_RECEIVE = 1 << 25, //群管理员主动在机器人资料页操作开启通知
+}
+
 export type Intent =
   // 频道事件
   | "GUILDS"

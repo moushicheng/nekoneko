@@ -17,7 +17,7 @@ type SessionStartLimit = {
 };
 
 export type WsEntry = {
-  url: string; // WebSocket 的连接地址
+  url?: string; // WebSocket 的连接地址
   shards?: number; // 建议的 shard 数
   session_start_limit?: SessionStartLimit; // Session 创建限制信息
 };

@@ -1,11 +1,21 @@
 import { WsEntry } from "../types/ws";
-
-export const wsEntry: WsEntry = {
-  url: "",
+type WsInfo = {
+  entry?: WsEntry;
+  session_id?: number;
+};
+export const wsInfo: WsInfo = {
+  entry: {},
 };
 export const saveStorageWsEntry = (entry: WsEntry) => {
-  Object.assign(wsEntry, entry);
+  Object.assign(wsInfo.entry, entry);
+};
+export const saveStorageWsInfo = (info: WsInfo) => {
+  Object.assign(wsInfo, info);
 };
 export const getStorageWsEntry = () => {
-  return wsEntry;
+  return wsInfo.entry;
+};
+
+export const getStorageWsInfo = () => {
+  return wsInfo;
 };

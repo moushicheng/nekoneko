@@ -1,9 +1,10 @@
 import { initTokenServices } from "../services/token";
-import { toObject } from "../services/ws";
 import { getToken, saveToken } from "../storage/token";
 import { createWsConnect } from "./ws/ws";
 import { Opcode, ReadyData, wsResData } from "../types/ws";
 import { getBot, saveBotInfo } from "../storage/bot";
+import { toObject } from "../utils/toObject";
+import { saveStorageWsInfo } from "../storage/ws";
 
 export type BotConfig = {
   appId: string;
@@ -22,19 +23,24 @@ export async function createBot(config: BotConfig) {
   ws.on("message", (stream) => {
     const raw = toObject<wsResData>(stream);
     console.log(raw);
+    saveStorageWsInfo({ session_id: raw.s });
     switch (raw.op) {
       //Hello事件，表示登陆成功
       case Opcode.HELLO: {
+        //注册心跳事件
         saveBotInfo({
           heartbeat_interval: raw.d.heartbeat_interval,
         });
+        ws.initHeartbeatService(raw.d.heartbeat_interval);
         //开始鉴权
         ws.authSession(access_token);
+        break;
       }
       //Ready事件,表示鉴权成功,可获得bot基础信息
       case Opcode.DISPATCH: {
         const data: ReadyData = raw.d;
         saveBotInfo(data.user);
+        break;
       }
     }
   });

@@ -1,12 +1,13 @@
 import { WebSocket } from "ws";
-import { getStorageWsEntry } from "../storage/ws";
 import { httpClient } from "./request";
 import { Opcode, WsEntry, wsReqData, wsResData } from "../types/ws";
 import { Intends } from "../types/event";
+import { getStorageWsEntry, getStorageWsInfo } from "../storage/ws";
 
 type WS = WebSocket & {
   sendWs: (data: wsReqData) => void;
   authSession: (accessToken: string) => void;
+  initHeartbeatService: (heartbeatInterval: number) => void;
 };
 
 export const connectWs = async (token: string, appId: string) => {
@@ -46,17 +47,23 @@ export const connectWs = async (token: string, appId: string) => {
       },
     });
   };
+  const sendHeartbeatEvent = () => {
+    sendWs({
+      op: Opcode.HEARTBEAT,
+      d: getStorageWsInfo().session_id,
+    });
+  };
+  const initHeartbeatService = (heartbeatInterval: number) => {
+    setInterval(() => {
+      sendHeartbeatEvent();
+    }, heartbeatInterval);
+  };
   Object.assign(ws, {
     sendWs,
     authSession,
+    initHeartbeatService,
   });
   return ws as WS;
-};
-
-export const toObject = <T = any>(data: any) => {
-  if (Buffer.isBuffer(data)) return JSON.parse(data.toString()) as T;
-  if (typeof data === "object") return data as T;
-  if (typeof data === "string") return JSON.parse(data) as T;
 };
 
 export const getWsEntry: () => Promise<WsEntry> = async () => {
