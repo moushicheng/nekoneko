@@ -1,9 +1,9 @@
 {
-  "name": "qqgroup-bot",
+  "name": "nekoneko",
   "version": "1.0.0",
-  "description": "qqgroup-bot是基于官方qq机器人框架制作的nodeSdk,可以很方便的制作你的第一个qq机器人！",
+  "description": "nekoneko是基于官方qq机器人框架制作的nodeSdk,可以很方便的制作你的第一个qq机器人！",
   "main": "dist/index.js",
-  "repository": "https://github.com/moushicheng/qqgroup-bot",
+  "repository": "https://github.com/moushicheng/nekoneko",
   "scripts": {
     "build": "rm -rf dist & tsc",
     "prepublishOnly": "npm run build"
