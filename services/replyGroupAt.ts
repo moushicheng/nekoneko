@@ -37,13 +37,13 @@ type Params = {
   ark?: ArkObject; // 可选的 Ark 对象
   message_reference?: MessageReference; // 可选的 消息引用
   event_id?: string; // 可选的 前置事件 ID
-  msg_id?: string; // 可选的 前置消息 ID
+  msg_id: string; // 前置消息 ID
   msg_seq?: number; // 可选的 回复消息序号
 };
 export async function replyGroupAt(params: Params) {
   const { groupOpenId } = params;
   const apiUrl = `/v2/groups/${groupOpenId}/messages`;
-
+  console.log(params, apiUrl);
   try {
     const response = await httpClient.post(
       apiUrl,
@@ -54,4 +54,5 @@ export async function replyGroupAt(params: Params) {
     console.error("Error sending media file:", error);
     throw error; // 抛出错误以便处理
   }
+  return undefined;
 }

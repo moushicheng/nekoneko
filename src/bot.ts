@@ -51,11 +51,12 @@ export async function createBot(config: BotConfig) {
       case GROUP_AT_MESSAGE_CREATE: {
         const data: Message = raw.d;
         config.callback.handleGroupAt(data, {
-          replyPlain: (content: string) => {
-            replyGroupAt({
+          replyPlain: async (content: string) => {
+            return await replyGroupAt({
               content,
               groupOpenId: data.group_openid,
               msg_type: MessageType.TEXT,
+              msg_id: data.id,
             });
           },
         });
