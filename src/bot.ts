@@ -5,10 +5,32 @@ import { Opcode, ReadyData, wsResData } from "../types/ws";
 import { getBot, saveBotInfo } from "../storage/bot";
 import { toObject } from "../utils/toObject";
 import { saveStorageWsInfo } from "../storage/ws";
+import { GROUP_AT_MESSAGE_CREATE } from "../const";
+import { MessageType, replyGroupAt } from "../services/replyGroupAt";
+type Author = {
+  id: string;
+  member_openid: string;
+  union_openid: string;
+};
 
+type Message = {
+  author: Author;
+  content: string;
+  group_id: string;
+  group_openid: string;
+  id: string;
+  timestamp: string;
+};
+type HandleAtEvent = {
+  replyPlain: (message: string) => void;
+};
 export type BotConfig = {
   appId: string;
   clientSecret: string;
+  callback?: {
+    handleGroupAt: (context: Message, event: HandleAtEvent) => void;
+    handleWatchMessage?: (data: wsResData) => void;
+  };
 };
 
 export async function createBot(config: BotConfig) {
@@ -20,10 +42,25 @@ export async function createBot(config: BotConfig) {
   const access_token = getToken()?.access_token;
   console.log("已获取到token", access_token);
   const ws = await createWsConnect(access_token, config.clientSecret);
+
   ws.on("message", (stream) => {
     const raw = toObject<wsResData>(stream);
-    console.log(raw);
+    config?.callback?.handleWatchMessage(raw);
     saveStorageWsInfo({ session_id: raw.s });
+    switch (raw.t) {
+      case GROUP_AT_MESSAGE_CREATE: {
+        const data: Message = raw.d;
+        config.callback.handleGroupAt(data, {
+          replyPlain: (content: string) => {
+            replyGroupAt({
+              content,
+              groupOpenId: data.group_openid,
+              msg_type: MessageType.TEXT,
+            });
+          },
+        });
+      }
+    }
     switch (raw.op) {
       //Hello事件，表示登陆成功
       case Opcode.HELLO: {
@@ -44,9 +81,9 @@ export async function createBot(config: BotConfig) {
       }
     }
   });
+  return {
+    ws,
+    //回复群聊中的艾特消息
+    replayGroupAt: (message: string) => {},
+  };
 }
-
-createBot({
-  appId: "102444777",
-  clientSecret: "2rhXND3tjaRI90riZRJB3vnfYRKD6zsm",
-});
