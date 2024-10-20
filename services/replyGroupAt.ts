@@ -7,9 +7,17 @@ export enum MessageType {
   EMBED = 4, // Embed
   MEDIA = 7, // 富媒体
 }
-type MarkdownObject = {
-  content: string; // Markdown 内容
-};
+type MarkdownObject =
+  | {
+      content: string; // Markdown 内容
+    }
+  | {
+      content_template_id: string; //markdown 模版id，申请模版后获得
+      params: Array<{
+        keys: string;
+        values: string;
+      }>;
+    };
 
 type KeyboardObject = {
   buttons: Array<{ label: string; action: string }>; // 按钮配置

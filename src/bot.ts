@@ -7,6 +7,7 @@ import { toObject } from "../utils/toObject";
 import { saveStorageWsInfo } from "../storage/ws";
 import { GROUP_AT_MESSAGE_CREATE } from "../const";
 import { MessageType, replyGroupAt } from "../services/replyGroupAt";
+import { FileType, uploadMedia } from "../services/media";
 type Author = {
   id: string;
   member_openid: string;
@@ -23,6 +24,7 @@ type Message = {
 };
 type HandleAtEvent = {
   replyPlain: (message: string) => void;
+  replyImage: (message: string, url: string) => void;
 };
 export type BotConfig = {
   appId: string;
@@ -56,6 +58,23 @@ export async function createBot(config: BotConfig) {
               content,
               groupOpenId: data.group_openid,
               msg_type: MessageType.TEXT,
+              msg_id: data.id,
+            });
+          },
+          replyImage: async (content, url) => {
+            const res = await uploadMedia({
+              openId: data.group_openid,
+              fileType: FileType.Image,
+              fileData: url,
+              targetType: "group",
+            });
+            return await replyGroupAt({
+              content,
+              groupOpenId: data.group_openid,
+              media: {
+                file_info: res.file_info,
+              },
+              msg_type: MessageType.MEDIA,
               msg_id: data.id,
             });
           },

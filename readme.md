@@ -7,6 +7,8 @@
 机器人框架文档：
 
 https://bot.q.qq.com/wiki/develop/api-v2/
+[消息发送](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/send-receive/send.html)
+[markdown 按钮](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/trans/msg-btn.html)
 
 腾讯开放平台：
 
