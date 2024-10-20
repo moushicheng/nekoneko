@@ -12,6 +12,10 @@ type WS = WebSocket & {
 
 export const connectWs = async (token: string, appId: string) => {
   const url = getStorageWsEntry()?.url;
+  if (!url) {
+    console.error("未获取到入口点url");
+    return;
+  }
   const ws = new WebSocket(url, {
     headers: {
       Authorization: `QQBot ${token}`,

@@ -1,7 +1,7 @@
 import { connectWs, getWsEntry } from "../../services/ws";
 import { saveStorageWsEntry } from "../../storage/ws";
 
-export const createWsConnect = async (access_token, secret) => {
+export const createWsConnect = async (access_token: string, secret: string) => {
   const data = await getWsEntry();
   if (!data) {
     console.log("wsEntry不存在!", data);

@@ -8,7 +8,7 @@ export const token: Token = {
   expires_in: -1,
   cache: "",
 };
-export const saveToken = (_token) => {
+export const saveToken = (_token: Token) => {
   token.access_token = _token.access_token;
   token.cache = _token.cache;
   token.expires_in = _token.expires_in;

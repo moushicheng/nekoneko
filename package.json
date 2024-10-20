@@ -1,12 +1,18 @@
 {
-  "name": "cmm",
+  "name": "qqgroup-bot",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "qqgroup-bot是基于官方qq机器人框架制作的nodeSdk,可以很方便的制作你的第一个qq机器人！",
+  "main": "dist/index.js",
+  "repository": "https://github.com/moushicheng/qqgroup-bot",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rm -rf dist & tsc",
+    "prepublishOnly": "npm run build"
   },
-  "author": "",
+  "files": [
+    "dist",
+    "readme.md"
+  ],
+  "author": "moushicheng <moushicheng@outlook.com>",
   "license": "ISC",
   "dependencies": {
     "qq-guild-bot": "^2.9.5",

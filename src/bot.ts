@@ -29,7 +29,7 @@ export type BotConfig = {
   clientSecret: string;
   callback?: {
     handleGroupAt: (context: Message, event: HandleAtEvent) => void;
-    handleWatchMessage?: (data: wsResData) => void;
+    handleWatchMessage?: (data?: wsResData) => void;
   };
 };
 
@@ -43,14 +43,14 @@ export async function createBot(config: BotConfig) {
   console.log("已获取到token", access_token);
   const ws = await createWsConnect(access_token, config.clientSecret);
 
-  ws.on("message", (stream) => {
+  ws?.on("message", (stream) => {
     const raw = toObject<wsResData>(stream);
-    config?.callback?.handleWatchMessage(raw);
-    saveStorageWsInfo({ session_id: raw.s });
-    switch (raw.t) {
+    config?.callback?.handleWatchMessage?.(raw);
+    saveStorageWsInfo({ session_id: raw?.s });
+    switch (raw?.t) {
       case GROUP_AT_MESSAGE_CREATE: {
         const data: Message = raw.d;
-        config.callback.handleGroupAt(data, {
+        config?.callback?.handleGroupAt(data, {
           replyPlain: async (content: string) => {
             return await replyGroupAt({
               content,
@@ -62,7 +62,7 @@ export async function createBot(config: BotConfig) {
         });
       }
     }
-    switch (raw.op) {
+    switch (raw?.op) {
       //Hello事件，表示登陆成功
       case Opcode.HELLO: {
         //注册心跳事件

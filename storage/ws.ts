@@ -7,7 +7,7 @@ export const wsInfo: WsInfo = {
   entry: {},
 };
 export const saveStorageWsEntry = (entry: WsEntry) => {
-  Object.assign(wsInfo.entry, entry);
+  Object.assign(wsInfo.entry as WsEntry, entry);
 };
 export const saveStorageWsInfo = (info: WsInfo) => {
   Object.assign(wsInfo, info);
