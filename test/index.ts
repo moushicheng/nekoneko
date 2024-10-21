@@ -32,16 +32,11 @@ async function fetchData() {
 
 async function main() {
   const bot = await createBot({
-    appId: "102444777",
-    clientSecret: "2rhXND3tjaRI90riZRJB3vnfYRKD6zsm",
+    appId: "xxx",
+    clientSecret: "xxxx",
     callback: {
       handleGroupAt: async (context, event) => {
         console.log("context", context);
-        const user = await fetchData();
-        const data = await event.replyImage(
-          `用户名【${user.name}】 LV${user.level} 粉丝: ${user.fans}`,
-          "https://rove.gd.cn:8081/bQuery/123.png"
-        );
       },
       handleWatchMessage: (msg) => {
         console.log(msg);
@@ -49,5 +44,3 @@ async function main() {
     },
   });
 }
-main();
-fetchData();
