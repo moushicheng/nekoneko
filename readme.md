@@ -2,9 +2,9 @@
   <img src="https://github.com/moushicheng/nekoneko/blob/main/github/logo.png?raw=true" alt="Nekoneko Logo" width="500" height="500" />
 </p>
 
-# qq 群聊官方机器人框架
+# nekoneko - 基于 tencent 官方的 qq 群聊机器人框架
 
-本机器人只做群聊，不做频道，因此有些许注意事项
+nekoneko 框架只做群聊，不做频道，因此有些许注意事项
 
 ## 基础文档
 
