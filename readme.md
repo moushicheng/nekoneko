@@ -1,3 +1,5 @@
+![Nekoneko Logo](https://github.com/moushicheng/nekoneko/blob/main/logo.png?raw=true)
+
 # qq 群聊官方机器人框架
 
 本机器人只做群聊，不做频道，因此有些许注意事项
