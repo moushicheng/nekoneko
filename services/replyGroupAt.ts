@@ -51,7 +51,6 @@ type Params = {
 export async function replyGroupAt(params: Params) {
   const { groupOpenId } = params;
   const apiUrl = `/v2/groups/${groupOpenId}/messages`;
-  console.log(params, apiUrl);
   try {
     const response = await httpClient.post(
       apiUrl,
