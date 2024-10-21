@@ -1,4 +1,4 @@
-![Nekoneko Logo](https://github.com/moushicheng/nekoneko/blob/main/logo.png?raw=true)
+<img src="https://github.com/moushicheng/nekoneko/blob/main/github/logo.png?raw=true" alt="Nekoneko Logo" width="500" height="500" />
 
 # qq 群聊官方机器人框架
 
