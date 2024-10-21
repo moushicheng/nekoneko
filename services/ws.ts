@@ -4,7 +4,8 @@ import { Opcode, WsEntry, wsReqData, wsResData } from "../types/ws";
 import { Intends } from "../types/event";
 import { getStorageWsEntry, getStorageWsInfo } from "../storage/ws";
 
-type WS = WebSocket & {
+export type WS = WebSocket & {
+  closed: boolean;
   sendWs: (data: wsReqData) => void;
   authSession: (accessToken: string) => void;
   initHeartbeatService: (heartbeatInterval: number) => void;
@@ -58,11 +59,16 @@ export const connectWs = async (token: string, appId: string) => {
     });
   };
   const initHeartbeatService = (heartbeatInterval: number) => {
-    setInterval(() => {
+    const id = setInterval(() => {
+      if (wsInstance.closed) {
+        clearInterval(id);
+        return;
+      }
       sendHeartbeatEvent();
     }, heartbeatInterval);
   };
-  Object.assign(ws, {
+  let wsInstance = Object.assign(ws, {
+    closed: false,
     sendWs,
     authSession,
     initHeartbeatService,

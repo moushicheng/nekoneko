@@ -25,7 +25,7 @@ export const initTokenServices = async (
 ) => {
   const next = async (time: number) => {
     const token = await getToken(appid, secret);
-    const duration = time === -1 ? (token.expires_in - 5) * 1000 : time;
+    const duration = time === -1 ? (token.expires_in - 1) * 1000 : time;
     callback.getToken(token);
     //token快废了重新获取
     setTimeout(() => {

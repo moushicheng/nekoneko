@@ -43,4 +43,9 @@ async function main() {
       },
     },
   });
+  setTimeout(() => {
+    console.log("关闭");
+    bot?.ws.close();
+  }, 10000);
 }
+main();
