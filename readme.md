@@ -1,4 +1,6 @@
-<img src="https://github.com/moushicheng/nekoneko/blob/main/github/logo.png?raw=true" alt="Nekoneko Logo" width="500" height="500" />
+<p align="center">
+  <img src="https://github.com/moushicheng/nekoneko/blob/main/github/logo.png?raw=true" alt="Nekoneko Logo" width="500" height="500" />
+</p>
 
 # qq 群聊官方机器人框架
 
