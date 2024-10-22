@@ -15,7 +15,16 @@ type Author = {
   union_openid: string;
 };
 
-type Message = {
+export type Message = {
+  attachments?: Array<{
+    content: string;
+    content_type: string;
+    filename: string;
+    height: number;
+    size: number;
+    url: string;
+    width: number;
+  }>;
   author: Author;
   content: string;
   group_id: string;
