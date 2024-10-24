@@ -36,7 +36,8 @@ type MessageReference = {
   // 具体结构未支持
 };
 type Params = {
-  groupOpenId: string;
+  openId?: string;
+  groupOpenId?: string;
   content: string; // 文本内容
   msg_type: MessageType; // 消息类型
   markdown?: MarkdownObject; // 可选的 Markdown 对象
@@ -54,7 +55,7 @@ export async function replyGroupAt(params: Params) {
   try {
     const response = await httpClient.post(
       apiUrl,
-      omit(params, ["groupOpenId"])
+      omit(params, ["groupOpenId", "openId"])
     );
     return response.data; // 返回响应数据
   } catch (error) {
@@ -62,4 +63,29 @@ export async function replyGroupAt(params: Params) {
     throw error; // 抛出错误以便处理
   }
   return undefined;
+}
+
+export async function replyUserAt(params: Params) {
+  const { openId } = params;
+  const apiUrl = `/v2/users/${openId}/messages`;
+  try {
+    const response = await httpClient.post(
+      apiUrl,
+      omit(params, ["groupOpenId", "openId"])
+    );
+    return response.data; // 返回响应数据
+  } catch (error) {
+    console.error("Error sending media file:", error);
+    throw error; // 抛出错误以便处理
+  }
+}
+
+export type TargetType = "user" | "group";
+export async function replyAt(params: Params, type: TargetType) {
+  if (type === "group") {
+    return replyGroupAt(params);
+  }
+  if (type === "user") {
+    return replyUserAt(params);
+  }
 }

@@ -14,16 +14,18 @@ type UploadResult = {
   id: string; //	发送消息的唯一ID，当srv_send_msg设置为true时返回
 };
 type Params = {
+  groupOpenId?: string;
   openId: string;
   targetType: TargetType;
   fileData: string | Buffer;
   fileType: FileType;
 };
 export async function uploadMedia(params: Params) {
-  const { openId, targetType, fileData, fileType } = params;
+  const { openId, targetType, fileData, fileType, groupOpenId } = params;
   const fileDataParsed = await getFileBase64(fileData);
+  const id = targetType === "group" ? groupOpenId : openId;
   const { data: result } = await httpClient.post(
-    `/v2/${targetType}s/${openId}/files`,
+    `/v2/${targetType}s/${id}/files`,
     {
       file_type: fileType,
       file_data: fileDataParsed,

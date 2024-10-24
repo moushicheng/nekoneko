@@ -5,8 +5,8 @@ import { Opcode, ReadyData, wsResData } from "../types/ws";
 import { getBot, saveBotInfo } from "../storage/bot";
 import { toObject } from "../utils/toObject";
 import { saveStorageWsInfo } from "../storage/ws";
-import { GROUP_AT_MESSAGE_CREATE } from "../const";
-import { MessageType, replyGroupAt } from "../services/replyGroupAt";
+import { C2C_MESSAGE_CREATE, GROUP_AT_MESSAGE_CREATE } from "../const";
+import { MessageType, replyAt } from "../services/replyGroupAt";
 import { FileType, uploadMedia } from "../services/media";
 import { WS } from "../services/ws";
 import { Intends } from "../types/event";
@@ -41,7 +41,7 @@ export type BotConfig = {
   appId: string;
   clientSecret: string;
   callback?: {
-    handleGroupAt: (context: Message, event: HandleAtEvent) => void;
+    handleAt: (context: Message, event: HandleAtEvent) => void;
     handleWatchMessage?: (data?: wsResData) => void;
   };
   intends?: Intends;
@@ -68,37 +68,48 @@ export async function createBot(config: BotConfig) {
       const raw = toObject<wsResData>(stream);
       config?.callback?.handleWatchMessage?.(raw);
       saveStorageWsInfo({ session_id: raw?.s });
-      switch (raw?.t) {
-        case GROUP_AT_MESSAGE_CREATE: {
-          const data: Message = raw.d;
-          config?.callback?.handleGroupAt(data, {
-            replyPlain: async (content: string) => {
-              return await replyGroupAt({
+      if (
+        raw &&
+        [GROUP_AT_MESSAGE_CREATE, C2C_MESSAGE_CREATE].includes(raw.t || "")
+      ) {
+        const type = raw.t === GROUP_AT_MESSAGE_CREATE ? "group" : "user";
+        const data: Message = raw.d;
+        config?.callback?.handleAt(data, {
+          replyPlain: async (content: string) => {
+            return await replyAt(
+              {
                 content,
-                groupOpenId: data.group_openid,
+                groupOpenId: data?.group_openid,
+                openId: data?.author.id,
                 msg_type: MessageType.TEXT,
                 msg_id: data.id,
-              });
-            },
-            replyImage: async (content, url) => {
-              const res = await uploadMedia({
-                openId: data.group_openid,
-                fileType: FileType.Image,
-                fileData: url,
-                targetType: "group",
-              });
-              return await replyGroupAt({
+              },
+              type
+            );
+          },
+          replyImage: async (content, url) => {
+            const res = await uploadMedia({
+              groupOpenId: data.group_openid,
+              openId: data?.author.id,
+              fileType: FileType.Image,
+              fileData: url,
+              targetType: type,
+            });
+            return await replyAt(
+              {
                 content,
+                openId: data?.author.id,
                 groupOpenId: data.group_openid,
                 media: {
                   file_info: res.file_info,
                 },
                 msg_type: MessageType.MEDIA,
                 msg_id: data.id,
-              });
-            },
-          });
-        }
+              },
+              type
+            );
+          },
+        });
       }
       switch (raw?.op) {
         //Hello事件，表示登陆成功
