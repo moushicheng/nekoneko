@@ -32,8 +32,8 @@ async function fetchData() {
 
 async function main() {
   const bot = await createBot({
-    appId: "xxx",
-    clientSecret: "xxxx",
+    appId: "102444777",
+    clientSecret: "2rhXND3tjaRI90riZRJB3vnfYRKD6zsm",
     callback: {
       handleGroupAt: async (context, event) => {
         console.log("context", context);

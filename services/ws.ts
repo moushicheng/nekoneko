@@ -3,6 +3,7 @@ import { httpClient } from "./request";
 import { Opcode, WsEntry, wsReqData, wsResData } from "../types/ws";
 import { Intends } from "../types/event";
 import { getStorageWsEntry, getStorageWsInfo } from "../storage/ws";
+import { BotConfig } from "../src/bot";
 
 export type WS = WebSocket & {
   closed: boolean;
@@ -11,7 +12,7 @@ export type WS = WebSocket & {
   initHeartbeatService: (heartbeatInterval: number) => void;
 };
 
-export const connectWs = async (token: string, appId: string) => {
+export const connectWs = async (token: string, config: BotConfig) => {
   const url = getStorageWsEntry()?.url;
   if (!url) {
     console.error("未获取到入口点url");
@@ -20,7 +21,7 @@ export const connectWs = async (token: string, appId: string) => {
   const ws = new WebSocket(url, {
     headers: {
       Authorization: `QQBot ${token}`,
-      "X-Union-Appid": appId,
+      "X-Union-Appid": config.clientSecret,
     },
   });
   const sendWs = (data: wsReqData) => {
@@ -47,10 +48,9 @@ export const connectWs = async (token: string, appId: string) => {
       op: Opcode.IDENTIFY,
       d: {
         token: `QQBot ${accessToken}`,
-        intents:
-          Intends.GROUP_AT_MESSAGE_CREATE |
-          Intends.DIRECT_MESSAGE |
-          Intends.GUILD_MESSAGES,
+        intents: config.intends
+          ? config.intends
+          : Intends.GROUP_AT_MESSAGE_CREATE | Intends.DIRECT_MESSAGE,
         shard: [0, 1], // 分片信息,给一个默认值
       },
     });
