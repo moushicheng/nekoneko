@@ -47,7 +47,10 @@ export const connectWs = async (token: string, appId: string) => {
       op: Opcode.IDENTIFY,
       d: {
         token: `QQBot ${accessToken}`,
-        intents: Intends.GROUP_AT_MESSAGE_CREATE | Intends.DIRECT_MESSAGE,
+        intents:
+          Intends.GROUP_AT_MESSAGE_CREATE |
+          Intends.DIRECT_MESSAGE |
+          Intends.GUILD_MESSAGES,
         shard: [0, 1], // 分片信息,给一个默认值
       },
     });
