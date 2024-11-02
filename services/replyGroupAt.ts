@@ -46,7 +46,7 @@ type Params = {
   ark?: ArkObject; // 可选的 Ark 对象
   message_reference?: MessageReference; // 可选的 消息引用
   event_id?: string; // 可选的 前置事件 ID
-  msg_id: string; // 前置消息 ID
+  msg_id?: string; // 前置消息 ID
   msg_seq?: number; // 可选的 回复消息序号
 };
 export async function replyGroupAt(params: Params) {
@@ -82,6 +82,14 @@ export async function replyUserAt(params: Params) {
 
 export type TargetType = "user" | "group";
 export async function replyAt(params: Params, type: TargetType) {
+  if (type === "group") {
+    return replyGroupAt(params);
+  }
+  if (type === "user") {
+    return replyUserAt(params);
+  }
+}
+export async function send(params: Omit<Params, "msg_id">, type: TargetType) {
   if (type === "group") {
     return replyGroupAt(params);
   }

@@ -15,7 +15,7 @@ type UploadResult = {
 };
 type Params = {
   groupOpenId?: string;
-  openId: string;
+  openId?: string;
   targetType: TargetType;
   fileData: string | Buffer;
   fileType: FileType;

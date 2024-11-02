@@ -6,7 +6,7 @@ import { getBot, saveBotInfo } from "../storage/bot";
 import { toObject } from "../utils/toObject";
 import { saveStorageWsInfo } from "../storage/ws";
 import { C2C_MESSAGE_CREATE, GROUP_AT_MESSAGE_CREATE } from "../const";
-import { MessageType, replyAt } from "../services/replyGroupAt";
+import { MessageType, replyAt, send } from "../services/replyGroupAt";
 import { FileType, uploadMedia } from "../services/media";
 import { WS } from "../services/ws";
 import { Intends } from "../types/event";
@@ -35,7 +35,7 @@ export type Message = {
 };
 type HandleAtEvent = {
   replyPlain: (message: string) => void;
-  replyImage: (message: string, url: string) => void;
+  replyImage: (message: string, url: string | Buffer) => void;
 };
 export type BotConfig = {
   appId: string;
@@ -87,12 +87,12 @@ export async function createBot(config: BotConfig) {
               type
             );
           },
-          replyImage: async (content, url) => {
+          replyImage: async (content: string, fileData: string | Buffer) => {
             const res = await uploadMedia({
               groupOpenId: data.group_openid,
               openId: data?.author.id,
               fileType: FileType.Image,
-              fileData: url,
+              fileData: fileData,
               targetType: type,
             });
             return await replyAt(
@@ -155,6 +155,71 @@ export async function createBot(config: BotConfig) {
   return {
     ws,
     //回复群聊中的艾特消息
-    sendGroupPlain: () => {},
+    sendUserPlain: async (openId: string, content: string) => {
+      return await send(
+        {
+          content,
+          openId,
+          msg_type: MessageType.TEXT,
+        },
+        "user"
+      );
+    },
+    sendGroupPlain: async (groupOpenId: string, content: string) => {
+      return await send(
+        {
+          content,
+          groupOpenId: groupOpenId,
+          msg_type: MessageType.TEXT,
+        },
+        "group"
+      );
+    },
+    sendUserImage: async (
+      openId: string,
+      content: string,
+      fileData: string | Buffer
+    ) => {
+      const res = await uploadMedia({
+        openId,
+        fileType: FileType.Image,
+        fileData: fileData,
+        targetType: "user",
+      });
+      return await replyAt(
+        {
+          content,
+          openId,
+          media: {
+            file_info: res.file_info,
+          },
+          msg_type: MessageType.MEDIA,
+        },
+        "user"
+      );
+    },
+    sendGroupImage: async (
+      groupOpenId: string,
+      content: string,
+      fileData: string | Buffer
+    ) => {
+      const res = await uploadMedia({
+        groupOpenId,
+        fileType: FileType.Image,
+        fileData: fileData,
+        targetType: "group",
+      });
+      return await send(
+        {
+          content,
+          groupOpenId,
+          media: {
+            file_info: res.file_info,
+          },
+          msg_type: MessageType.MEDIA,
+        },
+        "group"
+      );
+    },
   };
 }

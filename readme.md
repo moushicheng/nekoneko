@@ -41,23 +41,35 @@ npm install nekeneko
 ```ts
 async function main() {
   const bot = await createBot({
-    appId: "xxx",
-    clientSecret: "xxxx",
+    appId: "xxx", //请从机器人后台获得
+    clientSecret: "xxxx", //请从机器人后台获得
     callback: {
-      handleGroupAt: async (context, event) => {
-        //获取消息体
+      handleAt: async (context, event) => {
         console.log("context", context);
-        //回复消息
-        event.replyPlain("你好");
-        //回复图文消息
-        event.replyImage("你好", "https://xxxx.png");
       },
       handleWatchMessage: (msg) => {
         console.log(msg);
       },
     },
   });
+  //发送单聊文本
+  bot?.sendUserPlain("A3A930120130863155AB3D35BD0C06EE", "你好");
+  //发送单聊图片
+  bot?.sendUserImage(
+    "A3A930120130863155AB3D35BD0C06EE",
+    "你好",
+    path.join(__dirname, "./image.png")
+  );
+  //发送群聊文本
+  bot?.sendGroupPlain("391429EAAEF3B8458899AFA93D5449CF", "你好！");
+  //发送群聊图片
+  bot?.sendGroupImage(
+    "391429EAAEF3B8458899AFA93D5449CF",
+    "你好!",
+    path.join(__dirname, "./image.png")
+  );
 }
+main();
 ```
 
 ## 注意事项
