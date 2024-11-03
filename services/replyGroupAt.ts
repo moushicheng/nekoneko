@@ -7,7 +7,7 @@ export enum MessageType {
   EMBED = 4, // Embed
   MEDIA = 7, // 富媒体
 }
-type MarkdownObject =
+export type MarkdownObject =
   | {
       content: string; // Markdown 内容
     }
@@ -38,7 +38,7 @@ type MessageReference = {
 type Params = {
   openId?: string;
   groupOpenId?: string;
-  content: string; // 文本内容
+  content?: string; // 文本内容
   msg_type: MessageType; // 消息类型
   markdown?: MarkdownObject; // 可选的 Markdown 对象
   keyboard?: KeyboardObject; // 可选的 Keyboard 对象

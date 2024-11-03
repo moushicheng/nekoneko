@@ -6,7 +6,12 @@ import { getBot, saveBotInfo } from "../storage/bot";
 import { toObject } from "../utils/toObject";
 import { saveStorageWsInfo } from "../storage/ws";
 import { C2C_MESSAGE_CREATE, GROUP_AT_MESSAGE_CREATE } from "../const";
-import { MessageType, replyAt, send } from "../services/replyGroupAt";
+import {
+  MarkdownObject,
+  MessageType,
+  replyAt,
+  send,
+} from "../services/replyGroupAt";
 import { FileType, uploadMedia } from "../services/media";
 import { WS } from "../services/ws";
 import { Intends } from "../types/event";
@@ -165,16 +170,6 @@ export async function createBot(config: BotConfig) {
         "user"
       );
     },
-    sendGroupPlain: async (groupOpenId: string, content: string) => {
-      return await send(
-        {
-          content,
-          groupOpenId: groupOpenId,
-          msg_type: MessageType.TEXT,
-        },
-        "group"
-      );
-    },
     sendUserImage: async (
       openId: string,
       content: string,
@@ -198,6 +193,32 @@ export async function createBot(config: BotConfig) {
         "user"
       );
     },
+    sendUserMarkDown: async (
+      openId: string,
+      markdown: MarkdownObject,
+      content?: string
+    ) => {
+      return await send(
+        {
+          markdown,
+          content,
+          openId,
+          msg_type: MessageType.MARKDOWN,
+        },
+        "user"
+      );
+    },
+    sendGroupPlain: async (groupOpenId: string, content: string) => {
+      return await send(
+        {
+          content,
+          groupOpenId: groupOpenId,
+          msg_type: MessageType.TEXT,
+        },
+        "group"
+      );
+    },
+
     sendGroupImage: async (
       groupOpenId: string,
       content: string,
@@ -217,6 +238,21 @@ export async function createBot(config: BotConfig) {
             file_info: res.file_info,
           },
           msg_type: MessageType.MEDIA,
+        },
+        "group"
+      );
+    },
+    sendGroupMarkdown: async (
+      groupOpenId: string,
+      markdown: MarkdownObject,
+      content: string
+    ) => {
+      return await send(
+        {
+          markdown,
+          content,
+          groupOpenId: groupOpenId,
+          msg_type: MessageType.MARKDOWN,
         },
         "group"
       );

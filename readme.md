@@ -53,21 +53,13 @@ async function main() {
     },
   });
   //发送单聊文本
-  bot?.sendUserPlain("A3A930120130863155AB3D35BD0C06EE", "你好");
+  bot?.sendUserPlain(openId, "你好");
   //发送单聊图片
-  bot?.sendUserImage(
-    "A3A930120130863155AB3D35BD0C06EE",
-    "你好",
-    path.join(__dirname, "./image.png")
-  );
+  bot?.sendUserImage(openId, "你好", path.join(__dirname, "./image.png"));
   //发送群聊文本
-  bot?.sendGroupPlain("391429EAAEF3B8458899AFA93D5449CF", "你好！");
+  bot?.sendGroupPlain(openId, "你好！");
   //发送群聊图片
-  bot?.sendGroupImage(
-    "391429EAAEF3B8458899AFA93D5449CF",
-    "你好!",
-    path.join(__dirname, "./image.png")
-  );
+  bot?.sendGroupImage(openId, "你好!", path.join(__dirname, "./image.png"));
 }
 main();
 ```
