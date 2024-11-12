@@ -13,6 +13,9 @@ const getToken = async (appid: string, secret: string) => {
         } else {
           reject(res);
         }
+      })
+      .catch((err) => {
+        reject(err);
       });
   });
 };
@@ -28,8 +31,8 @@ export const initTokenServices = async (
     const duration = time === -1 ? (token.expires_in - 1) * 1000 : time;
     callback.getToken(token);
     //token快废了重新获取
-    setTimeout(() => {
-      next(token.expires_in);
+    setTimeout(async () => {
+      await next(token.expires_in);
     }, duration);
     return token;
   };
