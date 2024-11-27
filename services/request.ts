@@ -1,9 +1,11 @@
 import axios from "axios";
 import { getToken } from "../storage/token";
 const isDev = false;
+export const sandBoxBaseUrl = 'https://sandbox.api.sgroup.qq.com'
+export const prodBaseUrl = `https://api.sgroup.qq.com`
 const baseURL = isDev
-  ? "https://sandbox.api.sgroup.qq.com"
-  : `https://api.sgroup.qq.com`;
+  ? sandBoxBaseUrl
+  : prodBaseUrl;
 export const httpClient = axios.create({
   baseURL: baseURL,
 });

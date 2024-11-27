@@ -15,6 +15,7 @@ import {
 import { FileType, uploadMedia } from "../services/media";
 import { WS } from "../services/ws";
 import { Intends } from "../types/event";
+import { httpClient, sandBoxBaseUrl } from "../services/request";
 type Author = {
   id: string;
   member_openid: string;
@@ -49,10 +50,14 @@ export type BotConfig = {
     handleAt: (context: Message, event: HandleAtEvent) => void;
     handleWatchMessage?: (data?: wsResData) => void;
   };
+  sandBox?: boolean;
   intends?: Intends;
 };
 
 export async function createBot(config: BotConfig) {
+  if (config.sandBox) {
+    httpClient.defaults.baseURL = sandBoxBaseUrl
+  }
   let ws: WS | undefined;
   const startConnect = async () => {
     console.log("正在启动bot...");
