@@ -7,7 +7,7 @@ export type { Message };
 // async function main() {
 //     const bot = await createBot({
 //         appId: "102444777",
-//         sandBox: true,
+//         // sandBox: true,
 //         clientSecret: "2rhXND3tjaRI90riZRJB3vnfYRKD6zsm",
 //         callback: {
 //             handleAt: async (context, event) => {
