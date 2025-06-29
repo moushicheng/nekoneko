@@ -15,7 +15,9 @@ const getToken = async (appid: string, secret: string) => {
         }
       })
       .catch((err) => {
+        console.error('获取token失败！请检查ip设置')
         reject(err);
+        throw err
       });
   });
 };
@@ -29,7 +31,7 @@ export const initTokenServices = async (
   const next = async (time: number) => {
     const token = await getToken(appid, secret);
     const duration = time === -1 ? (token.expires_in - 1) * 1000 : time;
-    callback.getToken(token);
+    await callback.getToken(token);
     //token快废了重新获取
     setTimeout(async () => {
       await next(token.expires_in);

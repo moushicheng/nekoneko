@@ -18,6 +18,7 @@ httpClient.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.log('请求失败:', error.message, '请求路径:', error.config.url);
     return Promise.reject(error);
   }
 );
