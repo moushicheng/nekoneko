@@ -42,6 +42,8 @@ export type Message = {
 type HandleAtEvent = {
   replyPlain: (message: string) => void;
   replyImage: (message: string, url: string | Buffer) => void;
+  replayMarkdown: (message: MarkdownObject) => void;
+  replayAudio: (message: string, url: string | Buffer) => void;
 };
 export type BotConfig = {
   appId: string;
@@ -118,6 +120,40 @@ export async function createBot(config: BotConfig) {
               },
               type
             );
+          },
+          replayAudio: async (content: string, fileData: string | Buffer) => {
+            const res = await uploadMedia({
+              groupOpenId: data.group_openid,
+              openId: data?.author.id,
+              fileType: FileType.Audio,
+              fileData: fileData,
+              targetType: type,
+            })
+            return await replyAt({
+              content,
+              openId: data?.author.id,
+              groupOpenId: data.group_openid,
+              media: {
+                file_info: res.file_info,
+              },
+              msg_type: MessageType.MEDIA,
+              msg_id: data.id,
+            },
+              type
+            );
+          },
+          replayMarkdown: async (markdown: MarkdownObject, content?: string) => {
+            return await replyAt(
+              {
+                markdown,
+                content,
+                groupOpenId: data.group_openid,
+                openId: data?.author.id,
+                msg_type: MessageType.MARKDOWN,
+                msg_id: data.id,
+              },
+              type
+            )
           },
         });
       }
