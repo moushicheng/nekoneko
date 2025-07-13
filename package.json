@@ -1,6 +1,6 @@
 {
   "name": "nekoneko",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "nekoneko是基于官方qq机器人框架制作的nodeSdk,可以很方便的制作你的第一个qq机器人！",
   "main": "dist/index.js",
   "repository": "https://github.com/moushicheng/nekoneko",

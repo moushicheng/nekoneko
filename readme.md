@@ -62,6 +62,211 @@ async function main() {
 main();
 ```
 
+## API 文档
+
+### Bot 配置
+
+```ts
+type BotConfig = {
+  appId: string;                    // 机器人应用ID
+  clientSecret: string;             // 机器人密钥
+  callback?: {
+    handleAt: (context: Message, event: HandleAtEvent) => void;  // 处理@消息的回调
+    handleWatchMessage?: (data?: wsResData) => void;             // 监听所有消息的回调
+  };
+  sandBox?: boolean;                // 是否使用沙盒环境
+  intends?: Intends;                // 订阅的事件类型
+};
+```
+
+### 消息类型
+
+```ts
+type Message = {
+  attachments?: Array<{             // 附件信息
+    content: string;
+    content_type: string;
+    filename: string;
+    height: number;
+    size: number;
+    url: string;
+    width: number;
+  }>;
+  author: {                         // 发送者信息
+    id: string;                     // 用户openid
+    member_openid: string;          // 群成员openid
+    union_openid: string;           // 用户union_openid
+  };
+  content: string;                  // 消息内容
+  group_id: string;                 // 群号
+  group_openid: string;             // 群openid
+  id: string;                       // 消息ID
+  timestamp: string;                // 时间戳
+};
+```
+
+### 事件处理
+
+#### 处理@消息
+
+```ts
+type HandleAtEvent = {
+  replyPlain: (message: string) => void;                    // 回复纯文本
+  replyImage: (message: string, url: string | Buffer) => void;  // 回复图片
+  replayMarkdown: (message: MarkdownObject) => void;        // 回复Markdown
+  replayAudio: (message: string, url: string | Buffer) => void; // 回复音频
+};
+```
+
+#### 使用示例
+
+```ts
+const bot = await createBot({
+  appId: "your_app_id",
+  clientSecret: "your_client_secret",
+  callback: {
+    handleAt: async (context, event) => {
+      // 获取消息内容
+      const messageContent = context.content;
+      const userId = context.author.id;
+      const groupId = context.group_openid;
+      
+      // 回复纯文本
+      event.replyPlain("收到你的消息了！");
+      
+      // 回复图片
+      event.replyImage("这是一张图片", "./image.png");
+      
+      // 回复Markdown
+      event.replayMarkdown({
+        content: "**粗体文本** *斜体文本*"
+      });
+      
+      // 回复音频
+      event.replayAudio("这是一段音频", "./audio.mp3");
+    },
+    
+    // 监听所有消息（可选）
+    handleWatchMessage: (data) => {
+      console.log("收到消息:", data);
+    }
+  }
+});
+```
+
+### 主动发送消息
+
+#### 单聊消息
+
+```ts
+// 发送纯文本
+bot.sendUserPlain(openId, "你好！");
+
+// 发送图片
+bot.sendUserImage(openId, "图片说明", "./image.png");
+
+// 发送Markdown
+bot.sendUserMarkDown(openId, {
+  content: "**重要通知**\n这是一条重要消息"
+});
+```
+
+#### 群聊消息
+
+```ts
+// 发送纯文本
+bot.sendGroupPlain(groupOpenId, "群公告");
+
+// 发送图片
+bot.sendGroupImage(groupOpenId, "群图片", "./group_image.png");
+
+// 发送Markdown
+bot.sendGroupMarkdown(groupOpenId, {
+  content: "**群公告**\n- 第一条\n- 第二条"
+});
+```
+
+### Markdown 支持
+
+```ts
+type MarkdownObject = 
+  | {
+      content: string;  // 直接使用Markdown内容
+    }
+  | {
+      content_template_id: string;  // 使用模板ID
+      params: Array<{
+        keys: string;
+        values: string;
+      }>;
+    };
+```
+
+#### Markdown 示例
+
+```ts
+// 基础Markdown
+const markdown = {
+  content: "**粗体** *斜体* `代码` [链接](https://example.com)"
+};
+
+// 使用模板
+const templateMarkdown = {
+  content_template_id: "template_id",
+  params: [
+    { keys: "key1", values: "value1" },
+    { keys: "key2", values: "value2" }
+  ]
+};
+```
+
+### 事件订阅
+
+```ts
+enum Intends {
+  None = 0,
+  GUILDS = 1 << 0,                    // 频道操作事件
+  GUILD_MEMBERS = 1 << 1,             // 频道成员变更事件
+  GUILD_MESSAGES = 1 << 9,            // 私域频道消息事件
+  GUILD_MESSAGE_REACTIONS = 1 << 10,  // 频道消息表态事件
+  DIRECT_MESSAGE = 1 << 12,           // 频道私信事件
+  C2C_MESSAGE_CREATE = 1 << 25,       // 私聊消息事件
+  GROUP_AT_MESSAGE_CREATE = 1 << 25,  // 群聊@消息事件
+  INTERACTION = 1 << 26,              // 互动事件
+  // ... 更多事件类型
+}
+```
+
+#### 配置事件订阅
+
+```ts
+const bot = await createBot({
+  appId: "your_app_id",
+  clientSecret: "your_client_secret",
+  intends: Intends.C2C_MESSAGE_CREATE | Intends.GROUP_AT_MESSAGE_CREATE,
+  callback: {
+    handleAt: (context, event) => {
+      // 处理消息
+    }
+  }
+});
+```
+
+### 沙盒模式
+
+```ts
+const bot = await createBot({
+  appId: "your_app_id",
+  clientSecret: "your_client_secret",
+  sandBox: true,  // 启用沙盒模式
+  callback: {
+    handleAt: (context, event) => {
+      // 处理消息
+    }
+  }
+});
+```
+
 ## 注意事项
 
 ### 接口 & SDK
